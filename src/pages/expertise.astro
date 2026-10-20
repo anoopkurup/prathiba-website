@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+import { site } from '../data/site';
+
+const pillars = [
+  { t: 'Growth Strategy & Go-to-Market', d: 'Market positioning, business growth planning, go-to-market execution, and alignment between marketing priorities and commercial objectives.' },
+  { t: 'Marketing Strategy & Transformation', d: 'Brand development, digital communication, marketing operations, customer engagement, and the adoption of tools that strengthen marketing effectiveness.' },
+  { t: 'Business Development & Partnerships', d: 'Ecosystem development, stakeholder engagement, strategic alliances, and the identification of opportunities for market expansion.' },
+  { t: 'Operational Effectiveness & Leadership', d: 'Team development, process optimization, cross-functional alignment, governance, and performance measurement.' },
+];
+// TODO: replace each placeholder with the real content for that pillar.
+const parts = [
+  { h: 'The business problem', p: 'TODO: Describe the situation organisations typically face in this area.' },
+  { h: 'My approach', p: 'TODO: Describe how the problem is framed, diagnosed and addressed.' },
+  { h: 'Typical workstreams', p: 'TODO: List the typical workstreams delivered under this pillar.' },
+  { h: 'Intended business outcome', p: 'TODO: State the business outcome this work is intended to produce.' },
+];
+---
+<BaseLayout
+  title={`Expertise | ${site.name}`}
+  description="Four pillars of expertise: growth strategy and go-to-market, marketing strategy and transformation, business development and partnerships, operational effectiveness and leadership."
+  canonical="/expertise/"
+>
+  <Section headingLevel="h1" eyebrow="Expertise" heading="Connecting business strategy, marketing, and execution.">
+    <p class="lede">Four connected areas of work, each addressing a specific business problem with a defined approach, typical workstreams, and an intended outcome.</p>
+  </Section>
+
+  {pillars.map((p, i) => (
+    <Section tone={i % 2 ? 'stone' : 'ivory'} id={`pillar-${i + 1}`}>
+      <article class="pillar">
+        <header class="pillar-head">
+          <p class="num">0{i + 1}</p>
+          <h2>{p.t}</h2>
+          <p class="lede">{p.d}</p>
+        </header>
+        <div class="grid-cards">
+          {parts.map((s) => (
+            <div class="part">
+              <h3>{s.h}</h3>
+              <p class="muted">{s.p}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+    </Section>
+  ))}
+
+  <Section tone="navy">
+    <div class="cta">
+      <h2>Have a growth challenge worth discussing?</h2>
+      <Button href="/contact/#consulting" variant="secondary" class="cta-btn">Discuss a business challenge</Button>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .pillar { display: grid; gap: 2.5rem; }
+  @media (min-width: 900px) { .pillar { grid-template-columns: 2fr 3fr; gap: 4rem; } }
+  .pillar-head { display: grid; gap: 0.75rem; align-content: start; }
+  .part { padding-top: 1rem; border-top: 1px solid var(--navy); }
+  .part h3 { margin-bottom: 0.4rem; }
+  .cta { display: grid; gap: 1.5rem; justify-items: start; }
+  .cta h2 { max-width: 20ch; }
+  :global(.cta-btn) { border-color: var(--ivory) !important; color: var(--ivory) !important; }
+  :global(.cta-btn:hover) { background: rgba(247, 245, 240, 0.12) !important; }
+</style>

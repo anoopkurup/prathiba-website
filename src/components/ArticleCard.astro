@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'insights'>; }
+const { entry } = Astro.props;
+const { title, description, pubDate, audience, published } = entry.data;
+const date = pubDate.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<a class="article" href={`/insights/${entry.id}/`}>
+  <p class="meta"><time datetime={pubDate.toISOString()}>{date}</time> · For {audience}{!published && ' · Draft'}</p>
+  <h3>{title}</h3>
+  <p class="desc">{description}</p>
+  <span class="more">Read <span aria-hidden="true">→</span></span>
+</a>
+
+<style>
+  .article {
+    display: flex; flex-direction: column; gap: 0.6rem; height: 100%;
+    padding: 1.75rem 0; border-top: 1px solid var(--navy); text-decoration: none;
+  }
+  .article h3 { font-family: var(--serif); font-weight: 500; font-size: 1.4rem; transition: color var(--ease); }
+  .article:hover h3 { color: var(--gold-deep); }
+  .meta { font-size: 0.85rem; color: var(--navy-soft); }
+  .desc { color: var(--navy-soft); max-width: none; }
+  .more { margin-top: auto; padding-top: 0.75rem; font-weight: 600; font-size: 0.95rem; }
+</style>

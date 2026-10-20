@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Card from '../components/Card.astro';
+import MetricTile from '../components/MetricTile.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { site } from '../data/site';
+import { getWork, getInsights } from '../data/content';
+
+const work = await getWork();
+const insights = (await getInsights()).slice(0, 3);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: site.name,
+    jobTitle: site.title,
+    description: site.positioning,
+    url: site.domain,
+    sameAs: [site.linkedin],
+    ...(site.email ? { email: site.email } : {}),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    url: site.domain,
+  },
+];
+
+const challenges = [
+  { t: 'Strategic clarity', d: 'Defining where to compete, how to position, and what to prioritize.' },
+  { t: 'Marketing effectiveness', d: 'Aligning brand, communication, customer engagement, and demand generation with business goals.' },
+  { t: 'Execution discipline', d: 'Improving processes, accountability, cross-functional coordination, and performance measurement.' },
+  { t: 'Technology-enabled operations', d: 'Applying analytics, martech, and AI to improve how marketing and growth teams work.' },
+];
+const pillars = [
+  { t: 'Growth Strategy & Go-to-Market', d: 'Market positioning, business growth planning, go-to-market execution, and alignment between marketing priorities and commercial objectives.' },
+  { t: 'Marketing Strategy & Transformation', d: 'Brand development, digital communication, marketing operations, customer engagement, and the adoption of tools that strengthen marketing effectiveness.' },
+  { t: 'Business Development & Partnerships', d: 'Ecosystem development, stakeholder engagement, strategic alliances, and the identification of opportunities for market expansion.' },
+  { t: 'Operational Effectiveness & Leadership', d: 'Team development, process optimization, cross-functional alignment, governance, and performance measurement.' },
+];
+---
+<BaseLayout
+  title="Prathiba G. | Marketing & Business Growth Leader"
+  description="Explore Prathiba G.'s experience in marketing strategy, business growth, go-to-market execution, operational effectiveness, and technology-enabled transformation."
+  canonical="/"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <Hero />
+
+  <Section eyebrow="02 / Value proposition" heading="Growth requires more than marketing activity.">
+    <div class="stack" style="margin-bottom: 2.5rem;">
+      <p class="lede">Sustainable growth depends on aligning the right strategy with the right capabilities, operating systems, and execution priorities.</p>
+      <p>I focus on helping organizations address four connected challenges:</p>
+    </div>
+    <div class="grid-cards cols-4">
+      {challenges.map((c) => <Card title={c.t}><p>{c.d}</p></Card>)}
+    </div>
+  </Section>
+
+  <Section eyebrow="03 / Experience & impact" heading="A business-oriented approach to marketing leadership.">
+    <div class="grid-2">
+      <p class="lede">My experience spans established organizations and entrepreneurial ventures, combining operational discipline with marketing strategy, business development, and technology-led initiatives.</p>
+      <div class="grid-cards">
+        <MetricTile value="21+" label="Years of professional experience" />
+        <MetricTile value="40" label="Largest team size led" />
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="04 / Expertise" heading="Connecting strategy with execution." tone="stone">
+    <ol role="list" class="pillars">
+      {pillars.map((p, i) => (
+        <li>
+          <span class="num">0{i + 1}</span>
+          <h3>{p.t}</h3>
+          <p>{p.d}</p>
+        </li>
+      ))}
+    </ol>
+    <p style="margin-top: 2.5rem;"><a class="arrow-link" href="/expertise/">View full expertise <span aria-hidden="true">↗</span></a></p>
+  </Section>
+
+  <Section eyebrow="05 / Selected work" heading="Turning business challenges into structured action.">
+    <p class="lede" style="margin-bottom: 2.5rem;">My work brings together problem definition, strategic thinking, stakeholder alignment, and practical execution.</p>
+    {work.length > 0 ? (
+      <div class="grid-cards cols-3">{work.map((e) => <CaseStudyCard entry={e} />)}</div>
+    ) : (
+      <p><a class="arrow-link" href="/work/">Explore selected work <span aria-hidden="true">↗</span></a></p>
+    )}
+  </Section>
+
+  <Section eyebrow="06 / Thought leadership" heading="Perspectives on growth, marketing, and transformation.">
+    <div class="stack" style="margin-bottom: 2.5rem;">
+      <p class="lede">I explore the practical questions that shape business performance: how organizations build effective marketing systems, connect strategy with revenue, adopt emerging technology, and create the alignment needed to execute well.</p>
+      <p class="eyebrow" style="margin-top: 1.5rem; max-width: none;">Marketing and revenue alignment · AI adoption in marketing operations · GTM execution · Organizational alignment</p>
+    </div>
+    {insights.length > 0 ? (
+      <div class="grid-cards cols-3">{insights.map((e) => <ArticleCard entry={e} />)}</div>
+    ) : (
+      <p><a class="arrow-link" href="/insights/">Read insights <span aria-hidden="true">↗</span></a></p>
+    )}
+  </Section>
+
+  <Section eyebrow="07 / About" heading="Strategy informed by experience. Execution grounded in reality." tone="stone">
+    <div class="grid-2">
+      <div class="flow">
+        <p>Over the course of my career, I have worked across corporate environments, entrepreneurial ventures, marketing and communication, operations, and business ecosystem development.</p>
+        <p>These experiences have shaped how I approach growth: understand the business context, identify what matters most, bring stakeholders together, and build practical systems that translate priorities into action.</p>
+      </div>
+      <div class="flow">
+        <p>I value clear thinking, measurable outcomes, collaborative leadership, and solutions that can be sustained beyond the initial initiative.</p>
+        <p><a class="arrow-link" href="/about/">Read my story <span aria-hidden="true">↗</span></a></p>
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="08 / Let's connect" heading="Let's create clarity around your next growth challenge.">
+    <p class="lede" style="margin-bottom: 2.5rem;">Whether you are exploring a senior marketing leadership opportunity or looking to strengthen your organization's growth capabilities, I welcome a conversation.</p>
+    <div class="grid-cards">
+      <Card title="Leadership opportunities" href="/contact/#leadership">
+        <p>For organizations seeking marketing, growth, and transformation leadership.</p>
+      </Card>
+      <Card title="Business growth consulting" href="/contact/#consulting">
+        <p>For business owners and teams looking to improve growth strategy, marketing effectiveness, and execution.</p>
+      </Card>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .pillars { display: grid; gap: 2rem; }
+  @media (min-width: 768px) { .pillars { grid-template-columns: 1fr 1fr; gap: 2.5rem 3rem; } }
+  .pillars li { display: grid; gap: 0.5rem; padding-top: 1.25rem; border-top: 1px solid var(--navy); }
+  .pillars p { color: var(--navy-soft); }
+</style>

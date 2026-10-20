@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../data/site';
+const mailto = site.email ? `mailto:${site.email}` : undefined;
+---
+<BaseLayout
+  title={`Contact | ${site.name}`}
+  description="Get in touch about senior marketing leadership opportunities or business growth consulting. Email, LinkedIn or the enquiry form."
+  canonical="/contact/"
+>
+  <Section headingLevel="h1" eyebrow="Contact" heading="Let's discuss what growth could look like for your organization.">
+    <p class="lede">Whether you are evaluating a leadership hire or looking for help with growth strategy and execution, the fastest route is a short conversation. Choose the path that fits and I will reply directly.</p>
+  </Section>
+
+  <Section>
+    <div class="grid-cards paths">
+      <section id="leadership" class="path">
+        <p class="eyebrow">For organizations and search partners</p>
+        <h2>Leadership opportunities</h2>
+        <p>For CMO, VP Marketing, Growth and transformation leadership roles, share the context and I will respond with relevant experience and availability.</p>
+        <ul role="list" class="links">
+          {mailto ? <li><a href={mailto}>Email directly</a></li> : <li class="muted">Email: TODO</li>}
+          <li><a href={site.linkedin} target="_blank" rel="noopener">Connect on LinkedIn</a></li>
+          <li><a href="/contact/?type=leadership#contact-form">Use the form below</a></li>
+        </ul>
+      </section>
+      <section id="consulting" class="path">
+        <p class="eyebrow">For business owners and leadership teams</p>
+        <h2>Business growth consulting</h2>
+        <p>For help with growth strategy, go-to-market execution, marketing effectiveness or marketing operations, outline the challenge and I will suggest a first step.</p>
+        <ul role="list" class="links">
+          {mailto ? <li><a href={mailto}>Email directly</a></li> : <li class="muted">Email: TODO</li>}
+          <li><a href={site.linkedin} target="_blank" rel="noopener">Connect on LinkedIn</a></li>
+          <li><a href="/contact/?type=consulting#contact-form">Use the form below</a></li>
+        </ul>
+      </section>
+    </div>
+  </Section>
+
+  <Section eyebrow="Enquiry form" heading="Send a message" tone="stone">
+    <ContactForm />
+  </Section>
+</BaseLayout>
+
+<style>
+  .path { padding: 2rem; border: 1px solid var(--line); border-radius: var(--radius); scroll-margin-top: 90px; display: grid; gap: 0.75rem; align-content: start; }
+  .path h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); }
+  .links { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+  .links a { font-weight: 600; }
+</style>

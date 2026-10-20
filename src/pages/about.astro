@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+import { site } from '../data/site';
+
+// TODO: replace with the verified career timeline. Most recent first.
+const timeline = [
+  { role: 'TODO: Role title', org: 'TODO: Organisation', dates: 'TODO: YYYY – YYYY', scope: 'TODO: One line on scope, team, remit.' },
+  { role: 'TODO: Role title', org: 'TODO: Organisation', dates: 'TODO: YYYY – YYYY', scope: 'TODO: One line on scope, team, remit.' },
+  { role: 'TODO: Role title', org: 'TODO: Organisation', dates: 'TODO: YYYY – YYYY', scope: 'TODO: One line on scope, team, remit.' },
+];
+
+// TODO: replace with verified milestones.
+const milestones = [
+  'TODO: Milestone one (e.g. built and led a marketing function of 40).',
+  'TODO: Milestone two.',
+  'TODO: Milestone three.',
+];
+
+const cvUrl = ''; // TODO: link to CV (PDF)
+---
+<BaseLayout
+  title={`About | ${site.name}`}
+  description="Prathiba G.'s career across corporate environments, entrepreneurial ventures, marketing, operations and business ecosystem development."
+  canonical="/about/"
+>
+  <Section headingLevel="h1" eyebrow="About" heading="A career built around growth, execution, and organizational effectiveness.">
+    <div class="grid-2">
+      <div class="flow">
+        <p class="lede">Over the course of my career, I have worked across corporate environments, entrepreneurial ventures, marketing and communication, operations, and business ecosystem development.</p>
+        <p>These experiences have shaped how I approach growth: understand the business context, identify what matters most, bring stakeholders together, and build practical systems that translate priorities into action.</p>
+        <p>I value clear thinking, measurable outcomes, collaborative leadership, and solutions that can be sustained beyond the initial initiative.</p>
+        <p>With {site.experience} across marketing, business development, operations, partnerships, and digital ecosystems, I bring a practical, business-oriented approach to growth: one that connects strategy to the operating systems and execution discipline that make it real.</p>
+      </div>
+      <figure class="portrait">
+        <!-- TODO: replace portrait placeholder -->
+        <img src="/images/portrait-placeholder.jpg" alt="Portrait of Prathiba G." width="640" height="800" loading="lazy" />
+      </figure>
+    </div>
+  </Section>
+
+  <Section eyebrow="Career" heading="Timeline">
+    <ol role="list" class="timeline">
+      {timeline.map((t) => (
+        <li>
+          <p class="dates">{t.dates}</p>
+          <div>
+            <h3>{t.role}</h3>
+            <p class="org">{t.org}</p>
+            <p class="muted">{t.scope}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </Section>
+
+  <Section eyebrow="Milestones" heading="Selected career milestones" tone="stone">
+    <ul role="list" class="milestones">
+      {milestones.map((m) => <li>{m}</li>)}
+    </ul>
+  </Section>
+
+  <Section eyebrow="Leadership" heading="Leadership approach">
+    <div class="grid-2">
+      <div class="flow">
+        <p><strong>Understand the business context.</strong> Growth decisions start with the commercial reality: where the business competes, what it is trying to achieve, and what constrains it.</p>
+        <p><strong>Identify what matters most.</strong> Prioritisation over activity. A small number of clearly defined initiatives, measured properly, beats a long list of disconnected tactics.</p>
+      </div>
+      <div class="flow">
+        <p><strong>Bring stakeholders together.</strong> Marketing works when sales, operations, finance and leadership share the same priorities and the same definition of success.</p>
+        <p><strong>Build practical systems.</strong> Processes, governance, tools and measurement that outlast the initial initiative and keep teams executing well.</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="Exposure" heading="Industry and geographic exposure" tone="stone">
+    <div class="grid-2">
+      <div>
+        <h3>Industries</h3>
+        <p class="muted">TODO: list verified industries (e.g. technology, professional services, ...).</p>
+      </div>
+      <div>
+        <h3>Geographies</h3>
+        <p class="muted">TODO: list verified markets and regions.</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section eyebrow="Profile" heading="Review my full profile">
+    <div class="actions">
+      <Button href={site.linkedin} target="_blank" rel="noopener">LinkedIn profile <span aria-hidden="true">↗</span></Button>
+      {cvUrl
+        ? <Button href={cvUrl} variant="secondary" target="_blank" rel="noopener">Download CV</Button>
+        : <span class="muted">CV link: TODO</span>}
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); background: var(--stone); }
+  .timeline { display: grid; gap: 0; }
+  .timeline li { display: grid; gap: 0.5rem 2rem; padding: 1.5rem 0; border-top: 1px solid var(--line); }
+  .timeline li:last-child { border-bottom: 1px solid var(--line); }
+  @media (min-width: 768px) { .timeline li { grid-template-columns: 180px 1fr; } }
+  .dates { font-family: var(--serif); color: var(--gold-deep); }
+  .org { font-weight: 600; margin: 0.2rem 0 0.4rem; }
+  .milestones { display: grid; gap: 1rem; max-width: var(--measure); }
+  .milestones li { padding-left: 1.5rem; border-left: 2px solid var(--gold); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+</style>

@@ -1,0 +1,159 @@
+---
+import { site } from '../data/site';
+// Provider-agnostic: Formspree / Web3Forms / Netlify Forms all accept a plain POST to this URL.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || 'TODO-FORM-ENDPOINT';
+const mailto = site.email ? `mailto:${site.email}` : undefined;
+---
+<form id="contact-form" class="form" action={endpoint} method="POST" novalidate data-endpoint={endpoint}>
+  <div class="field">
+    <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+    <input id="name" name="name" type="text" required autocomplete="name" aria-describedby="name-err" />
+    <p id="name-err" class="err" hidden>Please enter your name.</p>
+  </div>
+
+  <div class="field">
+    <label for="email">Professional email <span class="req" aria-hidden="true">*</span></label>
+    <input id="email" name="email" type="email" required autocomplete="email" inputmode="email" aria-describedby="email-err" />
+    <p id="email-err" class="err" hidden>Please enter a valid email address.</p>
+  </div>
+
+  <div class="field">
+    <label for="type">Enquiry type <span class="req" aria-hidden="true">*</span></label>
+    <select id="type" name="enquiry_type" required aria-describedby="type-err">
+      <option value="">Select one</option>
+      <option value="Leadership opportunity">Leadership opportunity</option>
+      <option value="Consulting">Consulting</option>
+    </select>
+    <p id="type-err" class="err" hidden>Please choose an enquiry type.</p>
+  </div>
+
+  <div class="field">
+    <label for="org">Organisation <span class="opt">(optional)</span></label>
+    <input id="org" name="organisation" type="text" autocomplete="organization" />
+  </div>
+
+  <div class="field">
+    <label for="message">Message <span class="req" aria-hidden="true">*</span></label>
+    <textarea id="message" name="message" rows="6" required maxlength="2000" aria-describedby="message-err message-hint"></textarea>
+    <p id="message-hint" class="hint">Up to 2000 characters.</p>
+    <p id="message-err" class="err" hidden>Please enter a message.</p>
+  </div>
+
+  <!-- Honeypot: hidden from people, filled by bots -->
+  <div class="hp" aria-hidden="true">
+    <label for="website">Website</label>
+    <input id="website" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <p class="privacy">
+    Your name, email, organisation and message are used only to respond to this enquiry. They are sent to a
+    form-processing service and forwarded by email. Nothing is shared with third parties or used for marketing.
+  </p>
+
+  <div class="actions">
+    <button class="submit" type="submit">Send enquiry</button>
+    <p class="status" role="status" aria-live="polite" data-status></p>
+  </div>
+
+  <p class="fallback" data-fallback hidden>
+    Something went wrong sending the form.
+    {mailto ? <a href={mailto}>Email me directly instead</a> : <span>Please reach out via LinkedIn instead.</span>}
+  </p>
+</form>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const fallback = form.querySelector<HTMLElement>('[data-fallback]')!;
+    const submit = form.querySelector<HTMLButtonElement>('.submit')!;
+    const select = form.querySelector<HTMLSelectElement>('#type')!;
+
+    // Pre-select from ?type=leadership|consulting or #leadership|#consulting
+    const preselect = () => {
+      const q = new URLSearchParams(location.search).get('type') || location.hash.replace('#', '');
+      if (q === 'leadership') select.value = 'Leadership opportunity';
+      if (q === 'consulting') select.value = 'Consulting';
+    };
+    preselect();
+    window.addEventListener('hashchange', preselect);
+
+    const fields = form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[required]');
+    const setError = (el: HTMLElement, bad: boolean) => {
+      const err = document.getElementById(el.id + '-err');
+      el.setAttribute('aria-invalid', String(bad));
+      if (err) err.hidden = !bad;
+    };
+    const validate = () => {
+      const bad = [...fields].filter((f) => {
+        const invalid = !f.checkValidity();
+        setError(f, invalid);
+        return invalid;
+      });
+      bad[0]?.focus();
+      return bad.length === 0;
+    };
+    fields.forEach((f) => f.addEventListener('input', () => setError(f, !f.checkValidity())));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      fallback.hidden = true;
+      if (!validate()) return;
+
+      const endpoint = form.dataset.endpoint || '';
+      if (!endpoint || endpoint.startsWith('TODO')) {
+        status.textContent = 'The form is not configured yet.';
+        fallback.hidden = false;
+        return;
+      }
+
+      submit.disabled = true;
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.textContent = 'Thank you. Your enquiry has been sent and I will reply shortly.';
+      } catch {
+        status.textContent = 'The message could not be sent.';
+        fallback.hidden = false;
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .form { display: grid; gap: 1.25rem; max-width: 40rem; }
+  .field { display: grid; gap: 0.4rem; }
+  label { font-weight: 600; font-size: 0.95rem; }
+  .req { color: var(--gold-deep); }
+  .opt, .hint { font-weight: 400; color: var(--navy-soft); font-size: 0.85rem; }
+  input, select, textarea {
+    width: 100%; min-height: 48px; padding: 0.7rem 0.9rem;
+    border: 1.5px solid var(--line); border-radius: var(--radius-sm); background: #fff;
+    transition: border-color var(--ease);
+  }
+  textarea { resize: vertical; }
+  input:focus, select:focus, textarea:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(23, 43, 77, 0.15); }
+  [aria-invalid='true'] { border-color: #a23b2f; }
+  .err { color: #a23b2f; font-size: 0.875rem; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .privacy { font-size: 0.875rem; color: var(--navy-soft); padding: 1rem 1.1rem; background: var(--stone); border-radius: var(--radius-sm); max-width: none; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+  .submit {
+    min-height: 48px; padding: 0.7rem 1.6rem; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--navy); background: var(--navy); color: var(--ivory);
+    font-weight: 600; cursor: pointer; transition: background var(--ease);
+  }
+  .submit:hover { background: #0f1f3a; }
+  .submit:disabled { opacity: 0.6; cursor: wait; }
+  .status { font-size: 0.95rem; max-width: none; }
+  .fallback { font-size: 0.95rem; color: #a23b2f; }
+</style>

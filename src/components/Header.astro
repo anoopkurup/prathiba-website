@@ -1,0 +1,110 @@
+---
+const nav = [
+  { href: '/about/', label: 'About' },
+  { href: '/expertise/', label: 'Expertise' },
+  { href: '/work/', label: 'Work' },
+  { href: '/insights/', label: 'Insights' },
+];
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href);
+---
+<header class="site-header">
+  <div class="container bar">
+    <a class="wordmark" href="/" aria-label="Prathiba G. — home">PRATHIBA G.</a>
+
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
+      <span class="visually-hidden">Menu</span>
+      <span class="burger" aria-hidden="true"></span>
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Primary">
+      <ul role="list" class="links">
+        {nav.map((n) => (
+          <li><a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+      <div class="ctas">
+        <a class="cta cta--secondary" href="/contact/#leadership">Leadership opportunities</a>
+        <a class="cta cta--primary" href="/contact/#consulting">Consulting enquiries</a>
+      </div>
+    </nav>
+
+    <a class="cta cta--primary mobile-cta" href="/contact/">Contact</a>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = document.getElementById('site-nav');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('is-open', !open);
+    document.body.classList.toggle('nav-open', !open);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && btn?.getAttribute('aria-expanded') === 'true') btn.click();
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(247, 245, 240, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 72px; }
+  .wordmark {
+    font-family: var(--serif); font-weight: 600; font-size: 1.15rem; letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+  .links { display: flex; gap: 1.75rem; }
+  .links a {
+    text-decoration: none; font-weight: 500; font-size: 0.95rem; padding: 0.4rem 0;
+    border-bottom: 2px solid transparent; transition: border-color var(--ease);
+  }
+  .links a:hover { border-color: var(--gold); }
+  .links a[aria-current='page'] { border-color: var(--navy); font-weight: 600; }
+
+  .cta {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0.5rem 1.1rem;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--navy);
+    font-size: 0.9rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+    transition: background var(--ease), color var(--ease);
+  }
+  .cta--primary { background: var(--navy); color: var(--ivory); }
+  .cta--primary:hover { background: #0f1f3a; }
+  .cta--secondary:hover { background: rgba(23, 43, 77, 0.06); }
+  .ctas { display: flex; gap: 0.6rem; }
+
+  .menu-btn { display: none; background: none; border: 1.5px solid var(--line); border-radius: var(--radius-sm); width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; }
+  .burger, .burger::before, .burger::after { display: block; width: 20px; height: 2px; background: var(--navy); position: relative; transition: transform var(--ease), opacity var(--ease); }
+  .burger::before, .burger::after { content: ''; position: absolute; left: 0; }
+  .burger::before { top: -6px; }
+  .burger::after { top: 6px; }
+  .menu-btn[aria-expanded='true'] .burger { background: transparent; }
+  .menu-btn[aria-expanded='true'] .burger::before { transform: translateY(6px) rotate(45deg); }
+  .menu-btn[aria-expanded='true'] .burger::after { transform: translateY(-6px) rotate(-45deg); }
+  .mobile-cta { display: none; }
+
+  @media (min-width: 1024px) {
+    .nav { display: flex; align-items: center; gap: 2rem; }
+  }
+  @media (max-width: 1023.98px) {
+    .bar { gap: 0.75rem; }
+    .menu-btn { display: inline-flex; order: 3; }
+    .mobile-cta { display: inline-flex; order: 2; margin-left: auto; }
+    .nav {
+      display: none; position: absolute; left: 0; right: 0; top: 100%;
+      background: var(--ivory); border-bottom: 1px solid var(--line);
+      padding: 1rem var(--gutter) 1.5rem;
+    }
+    .nav.is-open { display: block; }
+    .links { flex-direction: column; gap: 0; }
+    .links a { display: block; padding: 0.9rem 0; border-bottom: 1px solid var(--line); font-size: 1.05rem; }
+    .links a[aria-current='page'] { border-color: var(--line); color: var(--gold-deep); }
+    .ctas { flex-direction: column; margin-top: 1.25rem; }
+    .cta { justify-content: center; min-height: 48px; }
+  }
+</style>

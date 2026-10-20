@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Button from '../../components/Button.astro';
+import { render } from 'astro:content';
+import { site } from '../../data/site';
+import { getWork } from '../../data/content';
+
+export async function getStaticPaths() {
+  const work = await getWork();
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+---
+<BaseLayout title={`${d.title} | ${site.name}`} description={d.summary} canonical={`/work/${entry.id}/`} noindex={!d.published}>
+  <Section headingLevel="h1" eyebrow={`${d.industry}${d.published ? '' : ' · Draft'}`} heading={d.title}>
+    <p class="lede">{d.summary}</p>
+  </Section>
+
+  <Section>
+    <div class="sections">
+      <div class="block"><p class="num">01 — Context</p><div class="prose"><p>{d.challenge}</p></div></div>
+      <div class="block"><p class="num">02 — Objective</p><div class="prose"><p>{d.summary}</p></div></div>
+      <div class="block"><p class="num">03 — My contribution</p><div class="prose"><p>{d.contribution}</p></div></div>
+      <div class="block">
+        <p class="num">04 — Approach</p>
+        <ol class="prose approach">{d.approach.map((a) => <li>{a}</li>)}</ol>
+      </div>
+      <div class="block">
+        <p class="num">05 — Outcome</p>
+        <dl class="outcomes">
+          {d.outcomes.map((o) => (
+            <div class="outcome">
+              <dt>{o.metric}</dt>
+              <dd class="value">{o.value}</dd>
+              {(o.period || o.evidence) && <dd class="muted small">{[o.period, o.evidence].filter(Boolean).join(' · ')}</dd>}
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div class="block"><p class="num">06 — Learning</p><div class="prose"><Content /></div></div>
+    </div>
+    <p style="margin-top: 4rem;"><Button href="/work/" variant="secondary">← All case studies</Button></p>
+  </Section>
+</BaseLayout>
+
+<style>
+  .sections { display: grid; gap: 3rem; }
+  .block { display: grid; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--navy); }
+  @media (min-width: 768px) { .block { grid-template-columns: 220px 1fr; gap: 2rem; } }
+  .approach { padding-left: 1.4em; }
+  .approach li + li { margin-top: 0.5em; }
+  .outcomes { display: grid; gap: 1rem; }
+  @media (min-width: 640px) { .outcomes { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); } }
+  .outcome { background: var(--stone); border-radius: var(--radius); padding: 1.25rem; }
+  .outcome dt { font-size: 0.9rem; color: var(--navy-soft); }
+  .outcome dd { margin: 0; }
+  .value { font-family: var(--serif); font-size: 2rem; line-height: 1.1; margin-top: 0.3rem !important; }
+  .small { font-size: 0.85rem; margin-top: 0.4rem !important; }
+</style>

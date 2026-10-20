@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { site } from '../../data/site';
+import { getInsights } from '../../data/content';
+const insights = await getInsights();
+---
+<BaseLayout
+  title={`Insights | ${site.name}`}
+  description="Perspectives on growth, marketing and transformation: marketing and revenue alignment, AI in marketing operations, go-to-market execution and organisational alignment."
+  canonical="/insights/"
+>
+  <Section headingLevel="h1" eyebrow="Insights" heading="Perspectives on growth, marketing, and transformation.">
+    <p class="lede" style="margin-bottom: 3rem;">I explore the practical questions that shape business performance: how organizations build effective marketing systems, connect strategy with revenue, adopt emerging technology, and create the alignment needed to execute well.</p>
+    {insights.length > 0 ? (
+      <div class="grid-cards cols-3">{insights.map((e) => <ArticleCard entry={e} />)}</div>
+    ) : (
+      <p class="muted">Articles are on their way. Follow on <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn</a> for updates.</p>
+    )}
+  </Section>
+</BaseLayout>

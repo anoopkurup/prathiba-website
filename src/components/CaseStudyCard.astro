@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'work'>; }
+const { entry } = Astro.props;
+const { title, industry, summary, published } = entry.data;
+---
+<a class="cs" href={`/work/${entry.id}/`}>
+  <p class="eyebrow">{industry}{!published && ' · Draft'}</p>
+  <h3>{title}</h3>
+  <p class="summary">{summary}</p>
+  <span class="more">Read the case study <span aria-hidden="true">→</span></span>
+</a>
+
+<style>
+  .cs {
+    display: flex; flex-direction: column; gap: 0.6rem; height: 100%;
+    padding: 2rem; border: 1px solid var(--line); border-radius: var(--radius);
+    text-decoration: none; background: var(--ivory);
+    transition: border-color var(--ease), transform var(--ease);
+  }
+  .cs:hover { border-color: var(--navy); transform: translateY(-2px); }
+  .cs h3 { font-family: var(--serif); font-weight: 500; font-size: 1.45rem; }
+  .eyebrow { margin-bottom: 0.25rem; }
+  .summary { color: var(--navy-soft); max-width: none; }
+  .more { margin-top: auto; padding-top: 1rem; font-weight: 600; font-size: 0.95rem; }
+</style>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import CaseStudyCard from '../../components/CaseStudyCard.astro';
+import { site } from '../../data/site';
+import { getWork } from '../../data/content';
+const work = await getWork();
+---
+<BaseLayout
+  title={`Selected Work | ${site.name}`}
+  description="Case studies showing how business challenges were turned into structured action: problem definition, strategy, stakeholder alignment and execution."
+  canonical="/work/"
+>
+  <Section headingLevel="h1" eyebrow="Selected work" heading="Evidence of thinking, decisions, and execution.">
+    <p class="lede" style="margin-bottom: 3rem;">My work brings together problem definition, strategic thinking, stakeholder alignment, and practical execution.</p>
+    {work.length > 0 ? (
+      <div class="grid-cards">{work.map((e) => <CaseStudyCard entry={e} />)}</div>
+    ) : (
+      <p class="muted">Case studies are being prepared for publication. In the meantime, <a href="/contact/">get in touch</a> to discuss relevant experience directly.</p>
+    )}
+  </Section>
+</BaseLayout>

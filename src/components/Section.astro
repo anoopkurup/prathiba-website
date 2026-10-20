@@ -1,0 +1,33 @@
+---
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  tone?: 'ivory' | 'stone' | 'navy';
+  class?: string;
+  headingLevel?: 'h1' | 'h2';
+}
+const { id, eyebrow, heading, tone = 'ivory', class: cls = '', headingLevel = 'h2' } = Astro.props;
+const H = headingLevel;
+---
+<section id={id} class:list={['section', `tone-${tone}`, cls]}>
+  <div class="container">
+    {(eyebrow || heading) && (
+      <div class="head">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        {heading && <H>{heading}</H>}
+      </div>
+    )}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section { padding-block: var(--section); }
+  .section + .section { padding-top: 0; }
+  .tone-stone { background: var(--stone); padding-top: var(--section) !important; }
+  .tone-stone + .section { padding-top: var(--section); }
+  .tone-navy { background: var(--navy); color: var(--ivory); padding-top: var(--section) !important; }
+  .tone-navy + .section { padding-top: var(--section); }
+  .head { margin-bottom: clamp(2rem, 4vw, 3rem); max-width: 30ch; }
+</style>
