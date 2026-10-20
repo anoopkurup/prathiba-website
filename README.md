@@ -88,21 +88,14 @@ The honeypot field is named `_gotcha` (Formspree convention). The form works wit
 
 Grep for `TODO` to find every placeholder.
 
-## Deploy
+## Deploy (Vercel)
 
-Build command `npm run build`, publish directory `dist/`, Node 22.22+.
+No adapter is needed: the site is fully static. `vercel.json` sets `trailingSlash: true` so `/about` redirects to `/about/`, matching the canonical URLs.
 
-### Cloudflare Pages
-
-1. Push the repo to GitHub. Pages → Create project → connect the repo.
-2. Framework preset: Astro. Build `npm run build`, output `dist`. Add env var `NODE_VERSION=22.23.3` and `PUBLIC_FORM_ENDPOINT`.
-3. Custom domains: add `example.com` and `www.example.com`. Cloudflare provisions HTTPS automatically.
-4. Redirect to one canonical host: Rules → Redirect Rules → `www.example.com/*` → `https://example.com/$1` (301), or the reverse. Match `site` in `astro.config.mjs`.
-
-### Netlify
-
-1. New site from Git. Build `npm run build`, publish `dist`. Env vars `NODE_VERSION=22.23.3` and `PUBLIC_FORM_ENDPOINT`.
-2. Domain management → add custom domain → follow DNS instructions (Netlify DNS or external CNAME/ALIAS). HTTPS via Let's Encrypt is automatic.
-3. Set the primary domain in Domain management; Netlify 301-redirects the other host to it.
+1. Push to GitHub. On Vercel: Add New → Project → import `prathiba-website`.
+2. Framework preset is detected as Astro (build `npm run build`, output `dist`). Node 22.x is the default and satisfies Astro's `>=22.22` requirement.
+3. Environment variables: add `PUBLIC_FORM_ENDPOINT` for Production (and Preview if you want to test the form).
+4. Settings → Domains: add `example.com` and `www.example.com`. Vercel issues HTTPS certificates automatically and 308-redirects the non-primary domain to the primary one. Point DNS as Vercel instructs (A record `76.76.21.21` for the apex, CNAME `cname.vercel-dns.com` for `www`).
+5. Every push to `master` deploys to production; pull requests get preview URLs.
 
 Replace `YOUR-DOMAIN-HERE` in the three places listed above before the first production deploy, otherwise canonical URLs, the sitemap and JSON-LD point at the placeholder.
